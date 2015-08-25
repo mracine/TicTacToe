@@ -1,0 +1,12 @@
+template: Tic-Tac-Toe
+
+server:
+
+  applicationConnectors:
+    - type: http
+      port: 8080
+      
+  adminConnectors:
+    - type: http
+      port: 8081
+      

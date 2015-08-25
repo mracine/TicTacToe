@@ -1,19 +1,28 @@
 package com.java.racine.tictactoe.core;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
  * @author Mike Racine
  *
  */
 public class BasicGame implements Game {
 	
+	private final UUID gameId;
+	
 	/**
-	 * Player board bounds are a square from (-1, -1) and (1, 1)
+	 * Player board bounds are a square from (0, 0) and (2, 2)
 	 */
-	private Board board = new HashMapBoard();
+	private final Board board = new HashMapBoard();
+	private List<Player> players = new ArrayList<Player>();
+	private List<GameMove> moves = new ArrayList<GameMove>();
 	private Piece currentPlayerTurn;
 	private MoveResult lastMoveResult;
 	
-	public BasicGame(Piece firstPlayer) {
+	public BasicGame(UUID gameId, Piece firstPlayer) {
+		this.gameId = gameId;
 		this.currentPlayerTurn = firstPlayer;
 		this.lastMoveResult = MoveResult.OK;
 	}	
@@ -21,36 +30,46 @@ public class BasicGame implements Game {
 	/* (non-Javadoc)
 	 * @see com.java.racine.tictactoe.core.TicTacToeGame#makeMove()
 	 */
-	public MoveResult makeMove(Piece piece, Coordinate coord) throws TicTacToeException {
+	public MoveResult makeMove(GameMove move) throws TicTacToeException {
+		
+		if(move == null) {
+			throw new TicTacToeException("Game received null move");
+		}
 		
 		// Automatically return if the game has already ended
-		if(this.lastMoveResult != MoveResult.OK) {
+		else if(this.lastMoveResult != MoveResult.OK) {
 			return lastMoveResult;
 		}
 		
+		// Check that the player making the move is in the game
+		else if(!isPlayerPieceRegistered(move.getPiece())) {
+			throw new TicTacToeException("Player " + move.getPiece() + " has not joined the game yet");
+		}
+		
 		// Check that piece being placed is valid with the current player's turn
-		else if(piece != this.currentPlayerTurn) {
-			throw new TicTacToeException("Cannot place " + piece + 
+		else if(move.getPiece() != this.currentPlayerTurn) {
+			throw new TicTacToeException("Cannot place " + move.getPiece() + 
 					" since it is " + this.currentPlayerTurn + "'s turn");
 		}
 		
 		// Check that piece is not out of bounds
-		else if(coord.getX() < -1 || coord.getX() > 1 || 
-				coord.getY() < -1 || coord.getY() > 1){
-			throw new TicTacToeException("Pieces must be placed between (-1,-1) and (1,1)");
+		else if(move.getCoordinate().getX() < 0 || move.getCoordinate().getX() > 2 || 
+				move.getCoordinate().getY() < 0 || move.getCoordinate().getY() > 2){
+			throw new TicTacToeException("Pieces must be placed between (0,0) and (2,2)");
 		}
 		
 		// Check that the space is not occupied
-		else if(board.isSpaceOccupied(coord)) {
+		else if(board.isSpaceOccupied(move.getCoordinate())) {
 			throw new TicTacToeException("Cannot claim an occupied space");
 		}
 		
 		// Place the piece
 		else {
-			board.placePiece(coord, currentPlayerTurn);
+			board.placePiece(move.getCoordinate(), currentPlayerTurn);
 		}
 		
-		MoveResult result = lastMoveResult = getMoveResult(piece, coord);
+		MoveResult result = lastMoveResult = getMoveResult(move.getPiece(), move.getCoordinate());
+		moves.add(move);
 		
 		switchTurns();
 		
@@ -75,12 +94,12 @@ public class BasicGame implements Game {
 			int row, col, diag, rdiag;
 			row = col = diag = rdiag = 0;
 			
-			for(int i = -1; i <= 1; i++) {
+			for(int i = 0; i < 3; i++) {
 				
 				if(board.getPieceAt(coord.getX(), i) == this.currentPlayerTurn) col++;
 				if(board.getPieceAt(i, coord.getY()) == this.currentPlayerTurn) row++;
 				if(board.getPieceAt(i, i) == this.currentPlayerTurn) diag++;
-				if(board.getPieceAt(i, i * -1) == this.currentPlayerTurn) rdiag++;
+				if(board.getPieceAt(i, 3 - (i + 1)) == this.currentPlayerTurn) rdiag++;
 			}
 			
 			if(row == 3 || col == 3 || diag == 3 || rdiag == 3) {
@@ -104,5 +123,48 @@ public class BasicGame implements Game {
 	 */
 	private void switchTurns() {
 		this.currentPlayerTurn = this.currentPlayerTurn == Piece.X ? Piece.O : Piece.X;
+	}
+	
+	private boolean isPlayerPieceRegistered(Piece piece) {
+		
+		boolean isRegistered = false;
+		
+		for(Player player : players) {
+			isRegistered = isRegistered || player.getPlayerPiece() == piece; 
+		}
+		
+		return isRegistered;
+	}
+
+	public UUID getGameId() {
+		return gameId;
+	}
+
+	public Player addPlayer(UUID playerId) {
+		
+		Player newPlayer;
+		
+		if(players.size() == 0) {
+			newPlayer = new Player(playerId, this.currentPlayerTurn);
+			players.add(newPlayer);
+		}
+		
+		else if(players.size() == 1) {
+			newPlayer = new Player(playerId, players.get(0).getPlayerPiece() == Piece.X ? Piece.O : Piece.X);
+			players.add(newPlayer);
+		}
+		
+		else
+			newPlayer = null;
+		
+		return newPlayer;
+	}
+	
+	public List<GameMove> getMoves() {
+		return moves;
+	}
+
+	public int getNumPlayers() {
+		return players.size();
 	}
 }

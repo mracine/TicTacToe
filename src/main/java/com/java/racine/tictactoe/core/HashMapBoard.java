@@ -22,7 +22,7 @@ public class HashMapBoard implements Board {
 	 * @see com.java.racine.tictactoe.core.Board#placePiece(int, int, com.java.racine.tictactoe.core.Piece)
 	 */
 	public void placePiece(int x, int y, Piece p) {
-		board.put(new BasicCoordinate(x, y), p);
+		board.put(new Coordinate(x, y), p);
 	}
 
 	/* (non-Javadoc)
@@ -36,7 +36,7 @@ public class HashMapBoard implements Board {
 	 * @see com.java.racine.tictactoe.core.Board#isSpaceOccupied(int, int)
 	 */
 	public boolean isSpaceOccupied(int x, int y) {
-		return board.containsKey(new BasicCoordinate(x, y));
+		return board.containsKey(new Coordinate(x, y));
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +50,7 @@ public class HashMapBoard implements Board {
 	 * @see com.java.racine.tictactoe.core.Board#getPieceAt(int, int)
 	 */
 	public Piece getPieceAt(int x, int y) {
-		return isSpaceOccupied(x, y) ? board.get(new BasicCoordinate(x, y)) : null;
+		return isSpaceOccupied(x, y) ? board.get(new Coordinate(x, y)) : null;
 	}
 
 	/* (non-Javadoc)

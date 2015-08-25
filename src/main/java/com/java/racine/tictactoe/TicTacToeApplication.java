@@ -6,8 +6,8 @@ package com.java.racine.tictactoe;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import com.java.racine.tictactoe.resources.TicTacToeResource;
 import com.java.racine.tictactoe.health.TemplateHealthCheck;
+import com.java.racine.tictactoe.resources.GameResource;
 
 /**
  * @author Mike Racine
@@ -35,18 +35,12 @@ public class TicTacToeApplication extends Application<TicTacToeConfiguration> {
 	@Override
 	public void run(TicTacToeConfiguration configuration, Environment environment) throws Exception {
 		
-		final TicTacToeResource resource = new TicTacToeResource(
-				configuration.getTemplate(),
-				configuration.getDefaultName()
-		);
+		final GameResource resource = new GameResource();
 		
 		final TemplateHealthCheck healthCheck = 
 				new TemplateHealthCheck(configuration.getTemplate());
 		
 		environment.healthChecks().register("template", healthCheck);
 		environment.jersey().register(resource);
-		
-		// Start new game
-		
 	}
 }

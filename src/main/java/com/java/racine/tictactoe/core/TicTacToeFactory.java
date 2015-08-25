@@ -1,5 +1,7 @@
 package com.java.racine.tictactoe.core;
 
+import java.util.UUID;
+
 /**
  * @author Mike Racine
  *
@@ -28,7 +30,7 @@ public class TicTacToeFactory {
 	 * @return a tic-tac-toe game
 	 */
 	public Game makeGame() {
-		return new BasicGame(Piece.X);
+		return new BasicGame(UUID.randomUUID(), Piece.X);
 	}
 	
 	/**
@@ -37,6 +39,6 @@ public class TicTacToeFactory {
 	 * @return a tic-tac-toe game
 	 */
 	public Game makeGame(Piece firstPlayer) {
-		return new BasicGame(firstPlayer);
+		return new BasicGame(UUID.randomUUID(), firstPlayer);
 	}
 }

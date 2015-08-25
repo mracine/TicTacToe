@@ -29,5 +29,4 @@ public class TemplateHealthCheck extends HealthCheck {
 		
 		return Result.healthy();
 	}
-
 }
