@@ -6,7 +6,8 @@ package com.java.racine.tictactoe;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import com.java.racine.tictactoe.health.TemplateHealthCheck;
+
+import com.java.racine.tictactoe.health.ApplicationHealthCheck;
 import com.java.racine.tictactoe.resources.GameResource;
 
 /**
@@ -37,10 +38,8 @@ public class TicTacToeApplication extends Application<TicTacToeConfiguration> {
 		
 		final GameResource resource = new GameResource();
 		
-		final TemplateHealthCheck healthCheck = 
-				new TemplateHealthCheck(configuration.getTemplate());
-		
-		environment.healthChecks().register("template", healthCheck);
+		// As long as application is running it should be healthy
+		environment.healthChecks().register("application", new ApplicationHealthCheck());
 		environment.jersey().register(resource);
 	}
 }

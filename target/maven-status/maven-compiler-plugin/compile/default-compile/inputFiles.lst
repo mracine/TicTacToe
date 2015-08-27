@@ -1,8 +1,11 @@
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\core\TicTacToeFactory.java
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\api\BaseResponse.java
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\core\Board.java
+C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\health\ApplicationHealthCheck.java
+C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\api\CloseGameResponse.java
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\core\BasicGame.java
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\core\GameManager.java
+C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\api\MakeMoveResponse.java
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\TicTacToeConfiguration.java
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\core\Game.java
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\core\Piece.java
@@ -10,7 +13,6 @@ C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\api\Cr
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\TicTacToeApplication.java
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\api\JoinGameResponse.java
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\core\HashMapBoard.java
-C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\health\TemplateHealthCheck.java
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\resources\GameResource.java
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\core\GameMove.java
 C:\Users\Mike\workspace\tictactoe\src\main\java\com\java\racine\tictactoe\core\Player.java

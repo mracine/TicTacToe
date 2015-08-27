@@ -1,7 +1,6 @@
 package com.java.racine.tictactoe.resources;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.validation.Valid;
 import javax.ws.rs.GET;
@@ -12,8 +11,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.java.racine.tictactoe.api.CloseGameResponse;
 import com.java.racine.tictactoe.api.CreateGameResponse;
 import com.java.racine.tictactoe.api.JoinGameResponse;
+import com.java.racine.tictactoe.api.MakeMoveResponse;
 import com.java.racine.tictactoe.core.Game;
 import com.java.racine.tictactoe.core.GameManager;
 import com.java.racine.tictactoe.core.GameMove;
@@ -30,29 +31,23 @@ import com.java.racine.tictactoe.core.TicTacToeException;
 @Path("/tictactoe")
 @Produces(MediaType.APPLICATION_JSON)
 public class GameResource {
-	
+
 	/**
 	 * Creates a new game, player, and designates that player as "X"
 	 * @return a Json response
 	 */
 	@POST
-	public CreateGameResponse createNewGame() {
-		Game g = GameManager.getInstance().createNewGame();
+	public CreateGameResponse createNewGame(@QueryParam("piece") Piece piece) {
+
+		Game g = piece != null ? GameManager.getInstance().createNewGame(piece) : 
+			GameManager.getInstance().createNewGame();
+
+		// This will always find the game since we just created it
 		Player p = GameManager.getInstance().addPlayer(g.getGameId());
-		return new CreateGameResponse(g.getGameId(), p.getPlayerId(), p.getPlayerPiece());
+
+		return new CreateGameResponse(g.getGameId(), p.getPlayerName(), p.getPlayerPiece());
 	}
-	
-	/**
-	 * Creates a new game, player, and designates that player as whatever he/she chose
-	 * @return a Json response
-	 */
-//	@POST
-//	public CreateGameResponse createNewGame(@Valid Piece playerPiece) {
-//		Game g = GameManager.getInstance().createNewGame(playerPiece);
-//		Player p = GameManager.getInstance().addPlayer(g.getGameId());
-//		return new CreateGameResponse(g.getGameId(), p.getPlayerId(), p.getPlayerPiece());
-//	}
-	
+
 	/**
 	 * Allows a new player to join a game of tic-tac-toe
 	 * @param gameId the id of the game to join
@@ -60,12 +55,23 @@ public class GameResource {
 	 */
 	@POST
 	@Path("/{gameId}")
-	public JoinGameResponse joinExistingGame(@PathParam("gameId") UUID gameId) {
-		Game g = GameManager.getInstance().findGame(gameId);
-		Player p = GameManager.getInstance().addPlayer(g.getGameId());
-		return new JoinGameResponse(g.getGameId(), p.getPlayerId(), p.getPlayerPiece());
+	public JoinGameResponse joinExistingGame(@PathParam("gameId") long gameId) {
+
+		JoinGameResponse response = new JoinGameResponse(-1, null, null);
+
+		try {
+
+			Game g = GameManager.getInstance().findGame(gameId);
+			Player p = GameManager.getInstance().addPlayer(g.getGameId());
+			response = new JoinGameResponse(g.getGameId(), p.getPlayerName(), p.getPlayerPiece());
+
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
+
+		return response;
 	}
-	
+
 	/**
 	 * @param gameId the game id
 	 * @param move the move to make
@@ -73,35 +79,58 @@ public class GameResource {
 	 */
 	@POST
 	@Path("/{gameId}/makeMove")
-	public MoveResult makeMove(@PathParam("gameId") UUID gameId, @Valid GameMove move) {
-		
+	public MakeMoveResponse makeMove(@PathParam("gameId") long gameId, @Valid GameMove move) {
+
 		MoveResult result = null;
-		
+
 		try {
 			result = GameManager.getInstance().findGame(gameId).makeMove(move);
 		} catch (TicTacToeException e) {
 			e.printStackTrace();
 		}
-		
-		return result;
+
+		String playerName = GameManager.getInstance().findGame(gameId).getPlayers().get(0).getPlayerPiece() == move.getPiece() ? 
+				GameManager.getInstance().findGame(gameId).getPlayers().get(0).getPlayerName() : 
+					GameManager.getInstance().findGame(gameId).getPlayers().get(1).getPlayerName();
+
+		return new MakeMoveResponse(gameId, playerName, move.getPiece(), result);
 	}
-	
+
 	/**
-	 * @return a list of tic-tac-toe games by id
+	 * @param gameId the id of the game to close
 	 */
-	@GET
-	@Path("/getGameIds")
-	public List<UUID> getGameIds() {
-		return GameManager.getInstance().getGameIds();
+	@POST
+	@Path("/{gameId}/close")
+	public CloseGameResponse closeGame(@PathParam("gameId") long gameId) {
+		GameManager.getInstance().closeGame(gameId);
+		return new CloseGameResponse(gameId, null, null);
 	}
-	
+
 	/**
 	 * @param gameId the id of the game
 	 * @return a list of all moves made in this game
 	 */
 	@GET
 	@Path("/{gameId}/getMoves")
-	public List<GameMove> getMoves(@QueryParam("gameId") UUID gameId) {
-		return GameManager.getInstance().findGame(gameId).getMoves();
+	public List<GameMove> getMoves(@QueryParam("gameId") long gameId) {
+
+		List<GameMove> moves = null;
+
+		try {
+			moves = GameManager.getInstance().findGame(gameId).getMoves();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
+
+		return moves;
+	}
+
+	/**
+	 * @return a list of tic-tac-toe games by id
+	 */
+	@GET
+	@Path("/getGameIds")
+	public List<Long> getGameIds() {
+		return GameManager.getInstance().getGameIds();
 	}
 }

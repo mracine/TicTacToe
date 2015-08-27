@@ -1,7 +1,5 @@
 package com.java.racine.tictactoe.core;
 
-import java.util.UUID;
-
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,22 +14,22 @@ import jersey.repackaged.com.google.common.base.MoreObjects;
 public class Player {
 
 	@NotNull
-	private UUID playerId;
+	private String playerName;
 	
 	@NotNull
 	private Piece playerPiece;
 	
-	public Player(UUID playerId, Piece playerPiece) {
-		this.playerId = playerId;
+	public Player(String playerName, Piece playerPiece) {
+		this.playerName = playerName;
 		this.playerPiece = playerPiece;
 	}
 
 	/**
-	 * @return the playerId
+	 * @return the playerName
 	 */
 	@JsonProperty
-	public UUID getPlayerId() {
-		return playerId;
+	public String getPlayerName() {
+		return playerName;
 	}
 	
 	/**
@@ -45,7 +43,7 @@ public class Player {
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
-				.add("playerId:", playerId)
+				.add("playerName", playerName)
 				.add("playerPiece", playerPiece)
 				.toString();
 	}

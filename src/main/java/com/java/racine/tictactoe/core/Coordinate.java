@@ -18,6 +18,10 @@ public class Coordinate {
 	@Range(min = 0, max = 2)
 	private int y;
 	
+	public Coordinate() {
+		// Jackson deserialization
+	}
+	
 	/**
 	 * Default constructor
 	 * @param x the desired X-coordinate
@@ -44,6 +48,14 @@ public class Coordinate {
 	public int getX() {
 		return x;
 	}
+	
+	/**
+	 * @param x the x to set
+	 */
+	@JsonProperty
+	public void setX(int x) {
+		this.x = x;
+	}
 
 	/* (non-Javadoc)
 	 * @see com.java.racine.tictactoe.core.TicTacToeCoordinate#getY()
@@ -51,6 +63,14 @@ public class Coordinate {
 	@JsonProperty
 	public int getY() {
 		return y;
+	}
+	
+	/**
+	 * @param y the y to set
+	 */
+	@JsonProperty
+	public void setY(int y) {
+		this.y = y;
 	}
 	
 	/**

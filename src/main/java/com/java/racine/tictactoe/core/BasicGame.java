@@ -2,7 +2,6 @@ package com.java.racine.tictactoe.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Mike Racine
@@ -10,7 +9,7 @@ import java.util.UUID;
  */
 public class BasicGame implements Game {
 	
-	private final UUID gameId;
+	private final long gameId;
 	
 	/**
 	 * Player board bounds are a square from (0, 0) and (2, 2)
@@ -21,7 +20,10 @@ public class BasicGame implements Game {
 	private Piece currentPlayerTurn;
 	private MoveResult lastMoveResult;
 	
-	public BasicGame(UUID gameId, Piece firstPlayer) {
+	private final String player1 = "Player1";
+	private final String player2 = "Player2";
+	
+	public BasicGame(long gameId, Piece firstPlayer) {
 		this.gameId = gameId;
 		this.currentPlayerTurn = firstPlayer;
 		this.lastMoveResult = MoveResult.OK;
@@ -125,6 +127,10 @@ public class BasicGame implements Game {
 		this.currentPlayerTurn = this.currentPlayerTurn == Piece.X ? Piece.O : Piece.X;
 	}
 	
+	/**
+	 * @param piece the piece to check
+	 * @return whether or not the piece is registered to a player or not
+	 */
 	private boolean isPlayerPieceRegistered(Piece piece) {
 		
 		boolean isRegistered = false;
@@ -136,26 +142,26 @@ public class BasicGame implements Game {
 		return isRegistered;
 	}
 
-	public UUID getGameId() {
+	public long getGameId() {
 		return gameId;
 	}
 
-	public Player addPlayer(UUID playerId) {
+	public Player addPlayer() throws TicTacToeException {
 		
 		Player newPlayer;
 		
 		if(players.size() == 0) {
-			newPlayer = new Player(playerId, this.currentPlayerTurn);
+			newPlayer = new Player(player1, this.currentPlayerTurn);
 			players.add(newPlayer);
 		}
 		
 		else if(players.size() == 1) {
-			newPlayer = new Player(playerId, players.get(0).getPlayerPiece() == Piece.X ? Piece.O : Piece.X);
+			newPlayer = new Player(player2, players.get(0).getPlayerPiece() == Piece.X ? Piece.O : Piece.X);
 			players.add(newPlayer);
 		}
 		
 		else
-			newPlayer = null;
+			throw new TicTacToeException("Cannot add more players, already 2 players in this game");
 		
 		return newPlayer;
 	}
@@ -164,7 +170,7 @@ public class BasicGame implements Game {
 		return moves;
 	}
 
-	public int getNumPlayers() {
-		return players.size();
+	public List<Player> getPlayers() {
+		return players;
 	}
 }

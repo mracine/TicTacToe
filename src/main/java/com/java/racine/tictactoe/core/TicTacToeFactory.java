@@ -1,7 +1,5 @@
 package com.java.racine.tictactoe.core;
 
-import java.util.UUID;
-
 /**
  * @author Mike Racine
  *
@@ -29,8 +27,8 @@ public class TicTacToeFactory {
 	 * If no firstPlayer is specified, X will move first by default
 	 * @return a tic-tac-toe game
 	 */
-	public Game makeGame() {
-		return new BasicGame(UUID.randomUUID(), Piece.X);
+	public Game makeGame(long gameId) {
+		return new BasicGame(gameId, Piece.X);
 	}
 	
 	/**
@@ -38,7 +36,7 @@ public class TicTacToeFactory {
 	 * @param firstPlayer the piece to take a space on the board first
 	 * @return a tic-tac-toe game
 	 */
-	public Game makeGame(Piece firstPlayer) {
-		return new BasicGame(UUID.randomUUID(), firstPlayer);
+	public Game makeGame(long gameId, Piece firstPlayer) {
+		return new BasicGame(gameId, firstPlayer);
 	}
 }

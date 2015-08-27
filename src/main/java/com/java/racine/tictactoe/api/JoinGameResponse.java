@@ -1,8 +1,8 @@
 package com.java.racine.tictactoe.api;
 
 import java.util.List;
-import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.java.racine.tictactoe.core.GameManager;
 import com.java.racine.tictactoe.core.GameMove;
 import com.java.racine.tictactoe.core.Piece;
@@ -14,10 +14,21 @@ import com.java.racine.tictactoe.core.Piece;
  */
 public class JoinGameResponse extends BaseResponse {
 
-	List<GameMove> movesMade;
+	private List<GameMove> movesMade;
 	
-	public JoinGameResponse(UUID gameId, UUID playerId, Piece playerPiece) {
-		super(gameId, playerId, playerPiece);
-		movesMade = GameManager.getInstance().findGame(gameId).getMoves();
+	public JoinGameResponse(long gameId, String playerName, Piece playerPiece) {
+		super(gameId, playerName, playerPiece);
+		
+		try {
+			movesMade = GameManager.getInstance().findGame(gameId).getMoves();
+		} catch (NullPointerException e) {
+			movesMade = null;
+			e.printStackTrace();
+		}
+	}
+	
+	@JsonProperty
+	public List<GameMove> getMovesMade() {
+		return movesMade;
 	}
 }

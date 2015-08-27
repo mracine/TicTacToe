@@ -7,7 +7,6 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -97,7 +96,7 @@ public class BasicGameTest {
 
 	@Test
 	public void testOutOfBounds_1() throws TicTacToeException {
-		
+
 		Game g = manager.createNewGame();
 		GameManager.getInstance().addPlayer(g.getGameId());
 		GameManager.getInstance().addPlayer(g.getGameId());
@@ -108,7 +107,7 @@ public class BasicGameTest {
 
 	@Test
 	public void testOutOfBounds_2() throws TicTacToeException {
-		
+
 		Game g = manager.createNewGame();
 		GameManager.getInstance().addPlayer(g.getGameId());
 		GameManager.getInstance().addPlayer(g.getGameId());
@@ -119,7 +118,7 @@ public class BasicGameTest {
 
 	@Test
 	public void testOutOfBounds_3() throws TicTacToeException {
-		
+
 		Game g = manager.createNewGame();
 		GameManager.getInstance().addPlayer(g.getGameId());
 		GameManager.getInstance().addPlayer(g.getGameId());
@@ -130,7 +129,7 @@ public class BasicGameTest {
 
 	@Test
 	public void testOutOfBounds_4() throws TicTacToeException {
-		
+
 		Game g = manager.createNewGame();
 		GameManager.getInstance().addPlayer(g.getGameId());
 		GameManager.getInstance().addPlayer(g.getGameId());
@@ -141,7 +140,7 @@ public class BasicGameTest {
 
 	@Test
 	public void testOccupiedSpace() throws TicTacToeException {
-		
+
 		Game g = manager.createNewGame();
 		GameManager.getInstance().addPlayer(g.getGameId());
 		GameManager.getInstance().addPlayer(g.getGameId());
@@ -227,7 +226,7 @@ public class BasicGameTest {
 	@Test
 	public void testGameId() {
 		Game g = manager.createNewGame();
-		UUID gameId = g.getGameId();
+		long gameId = g.getGameId();
 		assertEquals(gameId, g.getGameId());
 	}
 
@@ -240,12 +239,12 @@ public class BasicGameTest {
 		exception.expectMessage("Game received null move");
 		g.makeMove(null);
 	}
-	
+
 	@Test
 	public void testGetMoves() {
-		
+
 		try {
-			
+
 			Game g = manager.createNewGame();
 			GameManager.getInstance().addPlayer(g.getGameId());
 			GameManager.getInstance().addPlayer(g.getGameId());
@@ -258,34 +257,39 @@ public class BasicGameTest {
 			moves.add(move_2);
 			g.makeMove(move_2);
 			assertEquals(moves, g.getMoves());
-			
+
 		} catch (TicTacToeException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test
-	public void testAddPlayer() {
-		
+	public void testAddPlayer() throws TicTacToeException {
+
 		Game g = manager.createNewGame();
-		assertEquals(0, g.getNumPlayers());
-		g.addPlayer(UUID.randomUUID());
-		assertEquals(1, g.getNumPlayers());
-		g.addPlayer(UUID.randomUUID());
-		assertEquals(2, g.getNumPlayers());
-		g.addPlayer(UUID.randomUUID());
-		assertEquals(2, g.getNumPlayers());
+		assertEquals(0, g.getPlayers().size());
+		g.addPlayer();
+		assertEquals(1, g.getPlayers().size());
+		g.addPlayer();
+		assertEquals(2, g.getPlayers().size());
+		exception.expect(TicTacToeException.class);
+		g.addPlayer();
 	}
-	
+
 	@Test
 	public void testAddPlayerOFirst() {
-		Game g = manager.createNewGame(Piece.O);
-		assertEquals(0, g.getNumPlayers());
-		g.addPlayer(UUID.randomUUID());
-		assertEquals(1, g.getNumPlayers());
-		g.addPlayer(UUID.randomUUID());
+
+		try {
+			Game g = manager.createNewGame(Piece.O);
+			assertEquals(0, g.getPlayers().size());
+			g.addPlayer();
+			assertEquals(1, g.getPlayers().size());
+			g.addPlayer();
+		} catch (TicTacToeException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	@Test
 	public void testPlayerNotInGame() throws TicTacToeException {
 		Game g = manager.createNewGame();
@@ -303,17 +307,18 @@ public class BasicGameTest {
 		exception.expectMessage("Player O has not joined the game yet");
 		g.makeMove(new GameMove(Piece.O, new Coordinate(0,1)));
 	}
-	
+
 	@Test
 	public void testGameManagerGameNotExist() {
 		manager.createNewGame();
-		assertNull(GameManager.getInstance().addPlayer(UUID.randomUUID()));
+		exception.expect(NullPointerException.class);
+		GameManager.getInstance().addPlayer(100);
 	}
-	
+
 	@Test
 	public void testGameManagerGetIds() {
-		
-		manager.clearAllGames();
+
+		manager.closeAllGames();
 		assertTrue(manager.getGameIds().isEmpty());
 		Game g_1 = manager.createNewGame();
 		assertTrue(manager.getGameIds().contains(g_1.getGameId()));

@@ -1,7 +1,5 @@
 package com.java.racine.tictactoe.api;
 
-import java.util.UUID;
-
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,17 +13,17 @@ import com.java.racine.tictactoe.core.Piece;
 public abstract class BaseResponse {
 	
 	@NotNull
-	protected UUID gameId;
+	protected long gameId;
 	
 	@NotNull
-	protected UUID playerId;
+	protected String playerName;
 	
 	@NotNull
 	protected Piece playerPiece;
 	
-	public BaseResponse(UUID gameId, UUID playerId, Piece playerPiece) {
+	public BaseResponse(long gameId, String playerName, Piece playerPiece) {
 		this.gameId = gameId;
-		this.playerId = playerId;
+		this.playerName = playerName;
 		this.playerPiece = playerPiece;
 	}
 	
@@ -33,7 +31,7 @@ public abstract class BaseResponse {
 	 * @return the gameId
 	 */
 	@JsonProperty
-	public UUID getGameId() {
+	public long getGameId() {
 		return gameId;
 	}
 
@@ -41,8 +39,8 @@ public abstract class BaseResponse {
 	 * @return the playerId
 	 */
 	@JsonProperty
-	public UUID getPlayerId() {
-		return playerId;
+	public String getPlayerName() {
+		return playerName;
 	}
 	
 	/**

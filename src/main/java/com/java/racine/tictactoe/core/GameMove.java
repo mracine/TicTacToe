@@ -12,10 +12,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class GameMove {
 	
 	@NotNull
-	private final Piece piece;
+	private Piece piece;
 	
 	@NotNull
-	private final Coordinate coord;
+	private Coordinate coord;
+	
+	public GameMove() {
+		// Jackson deserialization
+	}
 	
 	public GameMove(Piece piece, Coordinate coord) {
 		this.piece = piece;
@@ -29,6 +33,14 @@ public class GameMove {
 	public Piece getPiece() {
 		return piece;
 	}
+	
+	/**
+	 * @param piece the piece to set
+	 */
+	@JsonProperty
+	public void setPiece(Piece piece) {
+		this.piece = piece;
+	}
 
 	/**
 	 * @return the coord
@@ -36,5 +48,13 @@ public class GameMove {
 	@JsonProperty
 	public Coordinate getCoordinate() {
 		return coord;
+	}
+	
+	/**
+	 * @param coord the coord to set
+	 */
+	@JsonProperty
+	public void setCoordinate(Coordinate coord) {
+		this.coord = coord;
 	}
 }

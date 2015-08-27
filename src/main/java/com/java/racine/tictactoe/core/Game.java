@@ -1,7 +1,6 @@
 package com.java.racine.tictactoe.core;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Mike Racine
@@ -12,17 +11,17 @@ public interface Game {
 	/**
 	 * @return the UUID of this game
 	 */
-	public UUID getGameId();
+	public long getGameId();
 	
 	/**
 	 * Adds a player to this game
 	 */
-	public Player addPlayer(UUID playerId);
+	public Player addPlayer() throws TicTacToeException;
 	
 	/**
 	 * @return the number of players in this game
 	 */
-	public int getNumPlayers();
+	public List<Player> getPlayers();
 	
 	/**
 	 * Makes a move in the game and returns its result
